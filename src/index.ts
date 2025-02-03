@@ -91,6 +91,7 @@ wss.on('connection', (ws: WebSocket, req) => {
 
     if (event === 'join-room') {
       const { roomId, username } = eventData
+
       if (rooms[roomId]) {
         // When a user joins a room, add their WebSocket to the room's list
         rooms[roomId].users.push(ws)
@@ -112,9 +113,9 @@ wss.on('connection', (ws: WebSocket, req) => {
       if (!rooms[roomId]) return
 
       if (drawData.strokes.length === 0) return
-      rooms[roomId].drawings.push(drawData)
       rooms[roomId].history.push([...rooms[roomId].drawings]) // Save history
       rooms[roomId].redoStack = [] // Clear redoStack when a new drawing happens
+      rooms[roomId].drawings.push(drawData)
 
       broadcast(roomId, JSON.stringify({ event: 'draw', data: drawData }), ws)
     }
